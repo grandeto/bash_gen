@@ -10,6 +10,8 @@ sort(Data) when is_list(Data) ->
     #{sorted := Sorted, executed := _, queued := _} = sort_tasks(Data),
     {ok, lists:reverse(Sorted)}.
 
+%% internal functions
+
 %% @doc Init the Tasks Sorting Algorithm
 -spec sort_tasks(list()) -> map().
 sort_tasks(Tasks) ->
