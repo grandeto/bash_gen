@@ -21,7 +21,6 @@ Test
 TODO
 -----
 
-- sort and generate service
 - sort and generate endpoints
 - validation service unit tests
 - validation service
