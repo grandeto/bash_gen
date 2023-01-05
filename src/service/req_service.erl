@@ -36,18 +36,18 @@
 
 -spec read_body(processor(), Req) -> {ok, binary(), Req} | {more, binary(), Req} when Req::req().
 read_body(Processor, Req) ->
-    Func = processor_func_adapter(Processor, read_body),
-    Processor:Func(Req).
+    Fun = processor_func_adapter(Processor, read_body),
+    Processor:Fun(Req).
 
 -spec reply(processor(), http_status(), http_headers(), resp_body(), Req) -> Req when Req::req().
 reply(Processor, Status, Headers, Body, Req) ->
-    Func = processor_func_adapter(Processor, reply),
-    Processor:Func(Status, Headers, Body, Req).
+    Fun = processor_func_adapter(Processor, reply),
+    Processor:Fun(Status, Headers, Body, Req).
 
 -spec path(processor(), req()) -> binary().
 path(Processor, Req) ->
-    Func = processor_func_adapter(Processor, path),
-    Processor:Func(Req).
+    Fun = processor_func_adapter(Processor, path),
+    Processor:Fun(Req).
 
 -spec exported_path(processor(), req()) -> atom() | unknown.
 exported_path(Processor, Req) ->
@@ -58,14 +58,14 @@ exported_path(Processor, Req) ->
 
 -spec json_decode(parser(), Source::binary(), Config::options()) -> json_term() | {incomplete, json_decoder()}.
 json_decode(Parser, Source, Config) ->
-    Func = json_parser_adapter(Parser, decode),
+    Fun = json_parser_adapter(Parser, decode),
     AdaptedConfig = json_config_adapter(Parser, Config),
-    Parser:Func(Source, AdaptedConfig).
+    Parser:Fun(Source, AdaptedConfig).
 
 -spec json_encode(parser(), Source::json_term()) -> binary() | {incomplete, json_encoder()}.
 json_encode(Parser, Source) ->
-    Func = json_parser_adapter(Parser, encode),
-    Parser:Func(Source).
+    Fun = json_parser_adapter(Parser, encode),
+    Parser:Fun(Source).
 
 %% internal functions
 
