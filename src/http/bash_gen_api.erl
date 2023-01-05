@@ -42,20 +42,24 @@ do_generate_from_json(Req0, State) ->
     #{
         req_service := ReqService, 
         req_processor := ReqProcessor,
-        json_parser := JsonParser
+        json_parser := JsonParser,
+        generate_service := GenerateService,
+        sort_service := SortService
     } = State,
     {ok, Body, Req} = ReqService:read_body(ReqProcessor, Req0),
-    Data = ReqService:json_decode(JsonParser, Body, [to_map]),
-    Resp = ReqService:json_encode(JsonParser, Data),
-    {stop, ReqService:reply(ReqProcessor, 201, #{<<"content-type">> => "application/json"}, Resp, Req), State}.
+    Decoded = ReqService:json_decode(JsonParser, Body, [to_map]),
+    {ok, Generated} = GenerateService:generate(maps:get(<<"tasks">>, Decoded), SortService),
+    {stop, ReqService:reply(ReqProcessor, 201, #{<<"content-type">> => "text/plain"}, Generated, Req), State}.
 
 do_sort_from_json(Req0, State) ->
     #{
         req_service := ReqService, 
         req_processor := ReqProcessor,
-        json_parser := JsonParser
+        json_parser := JsonParser,
+        sort_service := SortService
     } = State,
     {ok, Body, Req} = ReqService:read_body(ReqProcessor, Req0),
-    Data = ReqService:json_decode(JsonParser, Body, [to_map]),
-    Resp = ReqService:json_encode(JsonParser, Data),
+    Decoded = ReqService:json_decode(JsonParser, Body, [to_map]),
+    {ok, Sorted} = SortService:sort(maps:get(<<"tasks">>, Decoded)),
+    Resp = ReqService:json_encode(JsonParser, Sorted),
     {stop, ReqService:reply(ReqProcessor, 201, #{<<"content-type">> => "application/json"}, Resp, Req), State}.   
