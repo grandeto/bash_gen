@@ -6,50 +6,63 @@ req_service_test_() ->
     {setup,
      fun setup/0,
      fun teardown/1,
-     [
-      {"Test read body", fun test_read_body/0},
-      {"Test reply", fun test_reply/0},
-      {"Test path get", fun test_path/0},
-      {"Test exported path", fun test_exported_path/0},
-      {"Test json decode", fun test_json_decode/0},
-      {"Test json encode", fun test_json_encode/0}
-     ]
-    }.
+     fun({ReqProcessor, JsonParser}) ->
+        [
+            {"Test read body", fun() -> test_read_body(ReqProcessor) end},
+            {"Test reply", fun() -> test_reply(ReqProcessor) end},
+            {"Test path get", fun() -> test_path(ReqProcessor) end},
+            {"Test exported path", fun() -> test_exported_path(ReqProcessor) end},
+            {"Test json decode", fun() -> test_json_decode(JsonParser) end},
+            {"Test json encode", fun() -> test_json_encode(JsonParser) end}
+        ]
+    end}.
 
 setup() ->
-    ok.
+    App = bash_gen,
+    {ok, ReqProcessor} = application:get_env(App, req_processor),
+    {ok, JsonParser} = application:get_env(App, json_parser),
+    {ReqProcessor, JsonParser}.
 
 teardown(_) ->
     ok.
 
-test_read_body() ->
+test_read_body(ReqProcessor) ->
     Body = <<"Body">>,
     Req = #{body => Body},
-    ?assertEqual(Body, req_service:read_body(cowboy_req_stub, Req)).
+    Result = req_service:read_body(ReqProcessor, Req),
+    Expected = Body,
+    ?assertEqual(Expected, Result).
 
-test_reply() ->
+test_reply(ReqProcessor) ->
     Headers = #{<<"content-type">> => "application/json"},
     RespBody = #{id => 1},
     Req = #{body => RespBody},
-    ?assertEqual(
-        #{headers => Headers, resp_body => RespBody}, 
-        req_service:reply(cowboy_req_stub, 201, Headers, RespBody, Req)).
+    Result = req_service:reply(ReqProcessor, 201, Headers, RespBody, Req),
+    Expected = #{headers => Headers, resp_body => RespBody},
+    ?assertEqual(Expected, Result).
 
-test_path() ->
+test_path(ReqProcessor) ->
     Path = <<"host/sort">>,
     Req = #{path => Path},
-    ?assertEqual(
-        Path, req_service:path(cowboy_req_stub, Req)).
+    Result = req_service:path(ReqProcessor, Req),
+    Expected = Path,
+    ?assertEqual(Expected, Result).
 
-test_exported_path() ->
+test_exported_path(ReqProcessor) ->
     Path = <<"host/sort">>,
     Req = #{path => Path},
-    ?assertEqual(<<"sort">>, req_service:exported_path(cowboy_req_stub, Req)).
+    Result = req_service:exported_path(ReqProcessor, Req),
+    Expected = <<"sort">>,
+    ?assertEqual(Expected, Result).
 
-test_json_decode() ->
+test_json_decode(JsonParser) ->
     Body = <<"{\n  \"id\": 1\n}\n">>,
-    ?assertEqual(#{<<"id">> => 1}, req_service:json_decode(jsx, Body, [to_map])).
+    Result = req_service:json_decode(JsonParser, Body, [to_map]),
+    Expected = #{<<"id">> => 1},
+    ?assertEqual(Expected, Result).
 
-test_json_encode() ->
+test_json_encode(JsonParser) ->
     Json = #{<<"id">> => 1},
-    ?assertEqual(<<"{\"id\":1}">>, req_service:json_encode(jsx, Json)).
+    Result = req_service:json_encode(JsonParser, Json),
+    Expected = <<"{\"id\":1}">>,
+    ?assertEqual(Expected, Result).
