@@ -1,0 +1,7 @@
+-define(log_info(Format, Data),      lager:info(Format, Data)).
+-define(log_debug(Format, Data),     lager:debug(Format, Data)).
+-define(log_warning(Format, Data),   lager:warning(Format, Data)).
+-define(log_error(Format, Data),     lager:error(Format, Data)).
+-define(log_critical(Format, Data),  lager:critical(Format, Data)).
+-define(log_alert(Format, Data),     lager:alert(Format, Data)).
+-define(log_emergency(Format, Data), lager:emergency(Format, Data)).

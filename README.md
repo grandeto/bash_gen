@@ -76,8 +76,8 @@ Body example:
 TODO
 -----
 
-- validation service unit tests
-- validation service
-- final config
+- validation service unit tests full set of validations
+- validation service full set of validations
+- rlx config
 - e2e tests
 - readme
