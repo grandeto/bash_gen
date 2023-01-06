@@ -66,6 +66,7 @@ do_generate_from_json(Req0, State) ->
 
 do_sort_from_json(Req0, State) ->
     Action = sort,
+    ContentTypeApplicationJson = #{<<"content-type">> => "application/json"},
     #{
         req_service        := ReqService, 
         req_processor      := ReqProcessor,
@@ -82,10 +83,10 @@ do_sort_from_json(Req0, State) ->
             {ok, Result} = SortService:sort(maps:get(<<"tasks">>, Decoded)),
             Resp = ReqService:json_encode(JsonParser, Result),
             ?log_info("~p resp: ~p", [Action, Resp]),
-            {stop, ReqService:reply(ReqProcessor, 201, #{<<"content-type">> => "application/json"}, Resp, Req), State};
+            {stop, ReqService:reply(ReqProcessor, 201, ContentTypeApplicationJson, Resp, Req), State};
         {error, Reason} ->
             ?log_error("~p validation error: ~p", [Action, Reason]),
-            {stop, ReqService:reply(ReqProcessor, 400, #{<<"content-type">> => "application/json"}, error_reason(Reason, ReqService, JsonParser), Req), State}
+            {stop, ReqService:reply(ReqProcessor, 400, ContentTypeApplicationJson, error_reason(Reason, ReqService, JsonParser), Req), State}
     end.  
 
 %% internal functions
