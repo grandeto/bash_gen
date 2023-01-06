@@ -95,4 +95,3 @@ TODO
 
 - validation service unit tests full set of validations
 - validation service full set of validations
-- e2e tests
