@@ -19,8 +19,7 @@ setup() ->
     ok.
 
 teardown(_) ->
-    application:set_env(bash_gen, req_processor, cowboy_req_stub),
-    ok.
+    application:set_env(bash_gen, req_processor, cowboy_req_stub).
 
 test_sort_endpoint() ->
     inets:start(),
