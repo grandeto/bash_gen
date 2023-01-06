@@ -17,12 +17,14 @@ start(_StartType, _StartArgs) ->
     {ok, JsonParser} = application:get_env(App, json_parser),
     SortService = application:get_env(App, sort_service, sort_service),
     GenerateService = application:get_env(App, generate_service, generate_service),
+    ValidationService = application:get_env(App, validation_service, validation_service),
     Opts = #{
-        req_service      => ReqService,
-        req_processor    => ReqProcessor,
-        json_parser      => JsonParser,
-        generate_service => GenerateService,
-        sort_service     => SortService
+        req_service        => ReqService,
+        req_processor      => ReqProcessor,
+        json_parser        => JsonParser,
+        generate_service   => GenerateService,
+        sort_service       => SortService,
+        validation_service => {ValidationService, #{}}
     },
     Dispatch = cowboy_router:compile([
         {'_', [
