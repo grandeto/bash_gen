@@ -9,7 +9,23 @@ Build
 
     $ rebar3 compile
 
-Run in shell
+Build prod release
+-----
+
+    $ rebar3 release
+
+Running prod release locally
+-----
+
+    $ _build/default/rel/bash_gen/bin/bash_gen console
+
+Starting prod release
+-----
+
+    $ _build/default/rel/bash_gen/bin/bash_gen daemon
+
+
+Running in shell
 -----
 
     $ rebar3 shell
@@ -18,6 +34,7 @@ Test
 -----
 
     $ rebar3 eunit
+
 
 Usage
 -----
@@ -78,6 +95,4 @@ TODO
 
 - validation service unit tests full set of validations
 - validation service full set of validations
-- rlx config
 - e2e tests
-- readme
